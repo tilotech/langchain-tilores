@@ -1,19 +1,19 @@
 # Tilores Human-in-the-Loop
 
-This chat application provides a demonstration on how to use the Tilores Python SDK
-with the Python and LangChain ecosystem.
+This chat application showcases how to use the Tilores Python SDK within the Python and LangChain ecosystem.
 
-Here we combine:
+In this setup, we integrate:
 
 * Chainlit
 * LangGraph
 * LangChain
+* Tilores SDK
+* LangChain Tilores
 
-To build a comprehensive Human-in-the-Loop chat application for interacting with the
+The application provides a comprehensive Human-in-the-Loop interface for interacting with the
 Tilores entity resolution system.
 
-It works and adapts itself automatically to any Tilores instance schema, and works for
-any number of tools provided.
+It automatically adapts to any Tilores instance schema and supports any number of tools.
 
 ## Demo
 
