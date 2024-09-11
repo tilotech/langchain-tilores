@@ -8,11 +8,11 @@ for record retrieval, search, and entity resolution.
 
 ## Examples
 
-* **Human-in-the-Loop Chat:** [`examples/chat`](./examples/chat)
+* **Human-in-the-Loop Chat:** [`examples/chat`](https://github.com/tilotech/langchain-tilores/tree/main/examples/chat)
 
     This example demonstrates how to build a chat application using Chainlit and LangGraph to explore a Tilores instance through natural language. It guides users through search functionality and explains the search results.
 
-* **Basic Usage:** [`examples/basic`](./examples/basic)
+* **Basic Usage:** [`examples/basic`](https://github.com/tilotech/langchain-tilores/tree/main/examples/basic)
 
     This example shows how to use tools with an LLM model in a basic setup.
 
