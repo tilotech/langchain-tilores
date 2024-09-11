@@ -1,7 +1,7 @@
 # LangChain Using Tilores
 
 This repository provides the building blocks for integrating LangChain, LangGraph, and the
-Tilores entity resolution system.
+[Tilores entity resolution system](https://docs.tilotech.io/tilores/).
 
 Developers can use these tools to create powerful systems that leverage entity resolution
 for record retrieval, search, and entity resolution.
