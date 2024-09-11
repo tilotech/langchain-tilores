@@ -1,3 +1,4 @@
+.PHONY: build
 all: setup test
 
 check:
@@ -8,4 +9,11 @@ setup: check
 
 test: check
 	python -m unittest tests/*_test.py
+
+build:
+	python -m build
+
+upload: build
+	-twine upload --repository testpypi dist/*
+	twine upload dist/*
 
