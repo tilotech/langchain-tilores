@@ -53,7 +53,7 @@ def start():
     tilores_tools = TiloresTools(tilores)
     tools = [
         HumanInputChainlit(),
-        tilores_tools.search_tool,
+        tilores_tools.search_tool(),
     ]
     # Use MemorySaver to use the full conversation
     memory = MemorySaver()
