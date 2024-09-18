@@ -10,7 +10,7 @@ tilores = TiloresAPI.from_environ()
 tilores_tools = TiloresTools(tilores)
 
 # Setup a LLM model for inference bound with a set of tools.
-tools = [tilores_tools.search_tool]
+tools = [tilores_tools.search_tool()]
 tools_dict = {tool.name: tool for tool in tools}
 model = ChatOpenAI(temperature=0, streaming=True, model_name="gpt-4o")
 model = model.bind_tools(tools)
