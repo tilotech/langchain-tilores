@@ -24,7 +24,6 @@ export TILORES_API_URL='https://8edvhd7rqb.execute-api.eu-central-1.amazonaws.co
 export TILORES_TOKEN_URL='https://saas-umgegwho-tilores.auth.eu-central-1.amazoncognito.com/oauth2/token'
 export TILORES_CLIENT_ID='3l3i0ifjurnr58u4lgf0eaeqa3'
 export TILORES_CLIENT_SECRET='1c0g3v0u7pf1bvb7v65pauqt6s0h3vkkcf9u232u92ov3lm4aun2'
-export TILORES_SCOPE='"tilores/query.search", "tilores/query.entity"'
 ```
 
 ## Demo
