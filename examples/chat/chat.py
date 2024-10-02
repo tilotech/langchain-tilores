@@ -1,14 +1,20 @@
 import operator
 from typing import *
+import requests
+import tempfile
+import os
 
 # LangChain
 from langchain.tools import BaseTool
 from langchain_core.messages import AnyMessage, HumanMessage
 from langchain_openai import ChatOpenAI
+from langchain_aws import ChatBedrock
 
 # LangGraph
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
+from langchain_community.document_loaders import UnstructuredPDFLoader
+from langchain.tools import Tool
 
 # Tilores
 from tilores import TiloresAPI
@@ -44,16 +50,29 @@ class HumanInputChainlit(BaseTool):
 class ChatState(TypedDict):
     messages: Annotated[Sequence[AnyMessage], operator.add]
 
-
 @cl.on_chat_start
 def start():
-    llm = ChatOpenAI(temperature=0, streaming=True, model_name="gpt-4o")
+    if os.environ.get("LLM_PROVIDER") == "Bedrock":
+        llm = ChatBedrock(
+            credentials_profile_name=os.environ["BEDROCK_CREDENTIALS_PROFILE_NAME"],
+            region_name=os.environ["BEDROCK_REGION"],
+            model_id=os.environ["BEDROCK_MODEL_ID"],
+            streaming=True,
+            model_kwargs={"temperature": 0},
+        )
+    else:
+        model_name = "gpt-4o-mini"
+        if os.environ.get("OPENAI_MODEL_NAME"):
+            model_name = os.environ.get("OPENAI_MODEL_NAME")
+        llm = ChatOpenAI(temperature=0, streaming=True, model_name=model_name)
+    
     # Setup a connection to the Tilores instance and provide it as a tool
     tilores = TiloresAPI.from_environ()
     tilores_tools = TiloresTools(tilores)
     tools = [
         HumanInputChainlit(),
         tilores_tools.search_tool(),
+        pdf_tool,
     ]
     # Use MemorySaver to use the full conversation
     memory = MemorySaver()
@@ -64,7 +83,6 @@ def start():
     # Provide the runnable and state to the user session
     cl.user_session.set("runnable", agent)
     cl.user_session.set("state", state)
-
 
 @cl.on_message
 async def main(message: cl.Message):
@@ -80,7 +98,34 @@ async def main(message: cl.Message):
     await ui_message.send()
     async for event in runnable.astream_events(state, version="v1", config={'configurable': {'thread_id': 'thread-1'}}):
         if event["event"] == "on_chat_model_stream":
-            content = event["data"]["chunk"].content or ""
+            c = event["data"]["chunk"].content
+            if c and len(c) > 0 and isinstance(c[0], dict) and c[0]["type"] == "text":
+                content = c[0]["text"]
+            elif isinstance(c, str):
+                content = c
+            else:
+                content = ""
             await ui_message.stream_token(token=content)
+
     await ui_message.update()
 
+def load_pdf_from_url(url: str):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
+            temp_pdf.write(response.content)
+        
+        loader = UnstructuredPDFLoader(temp_pdf.name)
+        documents = loader.load()
+        return documents
+    else:
+        raise Exception(f"Failed to download PDF from {url}. Status code: {response.status_code}")
+
+pdf_tool = Tool(
+    name = "load_pdf",
+    func=load_pdf_from_url,
+    description="useful for when you need to download and process a PDF file from a given URL"
+)
