@@ -61,14 +61,16 @@ def start():
             model_kwargs={"temperature": 0},
         )
     else:
-        llm = ChatOpenAI(temperature=0, streaming=True, model_name="gpt-4o")
+        model_name = "gpt-4o-mini"
+        if os.environ.get("OPENAI_MODEL_NAME"):
+            model_name = os.environ.get("OPENAI_MODEL_NAME")
+        llm = ChatOpenAI(temperature=0, streaming=True, model_name=model_name)
     
     # Setup a connection to the Tilores instance and provide it as a tool
     tilores = TiloresAPI.from_environ()
     tilores_tools = TiloresTools(tilores)
     tools = [
         HumanInputChainlit(),
-        # tilores_tools.record_fields_tool(),
         tilores_tools.search_tool(),
         pdf_tool,
     ]
@@ -81,11 +83,6 @@ def start():
     # Provide the runnable and state to the user session
     cl.user_session.set("runnable", agent)
     cl.user_session.set("state", state)
-
-@cl.step
-def log():
-    print("on step")
-    print(cl.context.current_step)
 
 @cl.on_message
 async def main(message: cl.Message):
@@ -113,7 +110,6 @@ async def main(message: cl.Message):
     await ui_message.update()
 
 def load_pdf_from_url(url: str):
-    print(url)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }

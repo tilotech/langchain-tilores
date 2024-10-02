@@ -25,14 +25,6 @@ class TiloresTools:
             self.search_tool
         ]
     
-    # def record_fields_tool(self):
-    #     return StructuredTool.from_function(**{
-    #         'name': 'tilores_record_fields',
-    #         'description': 'useful for when you need to know which fields can be queried on an entity record',
-    #         'return_direct': True,
-    #         'func': static_value(self.tilores_api.record_field_names)
-    #     })
-
     def search_tool(self):
         return StructuredTool.from_function(**{
             'name': 'tilores_search',
