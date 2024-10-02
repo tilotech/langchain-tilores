@@ -32,7 +32,7 @@ Set the following environment variable if you would like to switch to another
 OpenAI model:
 
 ```
-export OPENAI_MODEL_NAME='gpt-o4'
+export OPENAI_MODEL_NAME='gpt-4o'
 ```
 
 If you would rather like to switch to any of the models that are provided by
