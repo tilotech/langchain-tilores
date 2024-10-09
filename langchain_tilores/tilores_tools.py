@@ -28,7 +28,7 @@ class TiloresTools:
     def search_tool(self):
         return StructuredTool.from_function(**{
             'name': 'tilores_search',
-            'description': 'useful for when you need to search one or more entities; each entity is a list of records with varying information which refer to the same real world entity',
+            'description': 'useful for when you need to search one or more entities; each entity represents one unique person and has a list of records with varying information referring to that one person; if more than one entity is returned, tell the user that there are several persons found and ask which one he is looking for.',
             'args_schema': self.references['SearchParams'],
             'return_direct': True,
             'func': self.tilores_api.search
