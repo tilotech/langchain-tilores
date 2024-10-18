@@ -16,7 +16,7 @@ Tilores entity resolution system.
 It automatically adapts to any Tilores instance schema and supports any number of tools.
 
 ## Prerequisites
-By default the demo uses OpenAIs GPT-o4 mini as the model. To start the demo, you'll need to input your OpenAI API key and the connection information for a Tilores instance as environment variables. For your convenience, the Tilores connection details for the demo instance have already been pre-filled.
+By default the demo uses OpenAIs GPT-4o mini as the model. To start the demo, you'll need to input your OpenAI API key and the connection information for a Tilores instance as environment variables. For your convenience, the Tilores connection details for the demo instance have already been pre-filled.
 
 ```
 export OPENAI_API_KEY='your key'
@@ -47,6 +47,10 @@ BEDROCK_REGION=us-east-1
 BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20240620-v1:0
 ```
 
+The aws profile needs to have access to the model with action 
+`InvokeModelWithResponseStream`. Also make sure the model is enabled in bedrock
+console and in the correct region.
+
 ## Demo
 
 The demo can be used with a preconfigured Tilores instance that is already loaded with some sample data.
@@ -56,6 +60,8 @@ $ cd examples/chat/
 $ pip install -r requirements.txt
 $ chainlit run chat.py -w
 ```
+
+Once the page is up, try asking: `Search for Sophie Muller`
 
 If you want to test the automatic lookup from the PDFs, you also must have the poppler-utils installed:
 
@@ -69,3 +75,19 @@ Firstname: Sophia
 Lastname: Muller
 Birthdate: 1990-04-15
 ```
+
+# Using Your Own Data
+
+To use your own data you will need to create a Tilores instance and get your free Tilores API credentials,
+Here's how to do that:
+* Navigate to app.tilores.io and sign up for free.
+* Click `Switch to Instance View` on the bottom right.
+* Select `Upload Data File` option and proceed. It is recommended to use csv file format.
+* If the file has well named headers the matching will be automatically configured and you can proceed with the instance
+creation without any further changes. The deployment will take around 3-5 minutes.
+* Once the deployment is done, navigate to `Manage Instance` -> `Integration` -> `GraphQL API`
+* The first URL is the `TILORES_GRAPHQL_API`, and the second is `TILORES_TOKEN_URL` you will need to export these two
+values as we did in the first step.
+* Then click `CREATE NEW CREDENTIALS` and store both values. Then export each one into its corresponding environment
+value `TILORES_CLIENT_ID` and `TILORES_CLIENT_SECRET`.
+* Now run `chainlit run chat.py -w` and ask to search for one of the records in your data.
