@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "tilores-sdk>=0.1.0",
+  "tilores-sdk>=0.3.0",
 ]
 [project.optional-dependencies]
 all = ["langchain-tilores[langchain]"]
