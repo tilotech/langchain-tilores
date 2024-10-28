@@ -2,6 +2,7 @@ from tilores import TiloresAPI
 from tilores.helpers import PydanticFactory
 from functools import cached_property
 from langchain.tools import StructuredTool
+from pydantic import create_model
 
 class TiloresTools:
     """
@@ -21,8 +22,8 @@ class TiloresTools:
 
     def all(self):
         return [
-            # self.record_fields_tool,
-            self.search_tool
+            self.search_tool,
+            self.edge_tool
         ]
 
     def search_tool(self):
@@ -32,6 +33,15 @@ class TiloresTools:
             'args_schema': self.references['SearchParams'],
             'return_direct': True,
             'func': self.tilores_api.search
+        })
+    
+    def edge_tool(self):
+        return StructuredTool.from_function(**{
+            'name': 'tilores_entity_edges',
+            'description': 'useful for when you need to provide details about why certain records of an entity are matching; a single edge contains two record IDs and a rule ID representing the reason why those two records belong to the same entity',
+            'args_schema': create_model("EntityEdgesArgs", entityID=(str, ...)),
+            'return_direct': True,
+            'func': self.tilores_api.entity_edges
         })
 
 def static_value(val):
