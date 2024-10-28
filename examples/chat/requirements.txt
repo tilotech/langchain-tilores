@@ -8,3 +8,4 @@ chainlit
 unstructured
 pdfminer.six
 unstructured[pdf]
+plotly==5.24.1
